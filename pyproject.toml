@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "wallet-check-api"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = {extras = ["all"], version = "^0.97.0"}
+sqlalchemy = "^2.0.16"
+alembic = "^1.11.1"
+psycopg2-binary = "^2.9.6"
+passlib = "^1.7.4"
+asyncpg = "^0.27.0"
+greenlet = "^2.0.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
