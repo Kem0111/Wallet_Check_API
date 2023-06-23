@@ -3,8 +3,8 @@ from typing import Union
 from fastapi.responses import Response
 from fastapi_jwt_auth import AuthJWT
 
-from core.security.tokens import create_access_token, create_refresh_token
-from core.settings import jwt_settings
+from app.core.security.tokens import create_access_token, create_refresh_token
+from app.core.settings import jwt_settings
 
 
 def unset_jwt_cookies(response: Response, authorize: AuthJWT) -> None:
