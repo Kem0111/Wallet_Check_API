@@ -6,7 +6,7 @@ from fastapi.responses import Response
 from starlette import status
 
 from app.core.crud import crud
-from app.core.depends import AuthJWT, Authorization, AuthorizationRefresh, DatabaseSession
+from app.core.depends import AuthJWT, AuthorizationRefresh, DatabaseSession
 from app.core.security import check_hashed_password
 from app.orm import UserModel
 from app.schemas import ApplicationResponse, RouteReturnT, BodyLoginRequest
