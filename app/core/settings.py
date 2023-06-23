@@ -1,6 +1,5 @@
-from pydantic import BaseConfig
+from typing import Optional
 from pydantic import BaseSettings as PydanticBaseSettings
-from pydantic import Field
 
 
 class BaseSettings(PydanticBaseSettings):
@@ -32,3 +31,17 @@ class DatabaseSettings(BaseSettings):
 
 
 database_settings = DatabaseSettings()
+
+
+class JWTSettings(BaseSettings):
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRATION_TIME: int
+    REFRESH_TOKEN_EXPIRATION_TIME: int
+    COOKIE_SECURE: bool
+    COOKIE_CSRF: bool
+    COOKIE_SAMESITE: str
+    COOKIE_DOMAIN: Optional[str] = None
+    JWT_SECRET_KEY: str
+
+
+jwt_settings = JWTSettings()
