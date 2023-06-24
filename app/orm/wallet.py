@@ -15,8 +15,8 @@ class WalletModel(ORMModel):
 
     __tablename__ = "wallet"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    address: Mapped[str] = mapped_column(String(120))
+    id: Mapped[int] = mapped_column(primary_key=True)
+    address: Mapped[str] = mapped_column(String(120), unique=True, index=True)
     created_at: Mapped[dt] = mapped_column(DateTime, default=dt.utcnow)
     users: Mapped[List[UserModel]] = relationship(
         "UserModel",
