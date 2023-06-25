@@ -1,7 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.param_functions import Body
 from app.core.depends import DatabaseSession
-from app.schemas import ApplicationResponse, BodyAddressUploadRequest, WalletAddress, Transactions
+from app.schemas import (ApplicationResponse,
+                         BodyAddressUploadRequest,
+                         WalletAddress,
+                         Transactions,
+                         WalletBalance)
 from app.core.depends import authorization
 from app.orm import WalletModel, UserModel
 from starlette import status
@@ -9,13 +13,14 @@ from app.utils.db_query import (get_or_create_wallet,
                                 show_wallet_addresses,
                                 delet_wallet_address as del_wallet)
 from app.wallet_analytics.wallet_manager import wallet_manager
+from app.core.depends.transaction_limits import check_limit_tr
 
 router = APIRouter()
 
 
 
 @router.post(
-    path="/addAddress",
+    path="/addWallet",
     summary="WORKS: Add wallet address to database.",
     response_model=ApplicationResponse[bool],
     status_code=status.HTTP_200_OK,
@@ -47,7 +52,7 @@ async def add_wallet_address(
 
 
 @router.get(
-    path="/getAddresses",
+    path="/getWallets",
     summary="WORKS: Get wallet addresses from database.",
     response_model=ApplicationResponse[WalletAddress],
     status_code=status.HTTP_200_OK,
@@ -67,7 +72,7 @@ async def get_wallet_addresses(
 
 
 @router.delete(
-    path="/{wallet_id}/deleteAddress",
+    path="/{wallet_id}/deleteWallet",
     summary="WORKS: Dlete wallet addresses from user_info relationship.",
     response_model=ApplicationResponse[bool],
     status_code=status.HTTP_200_OK,
@@ -89,15 +94,15 @@ async def delet_wallet_address(
 
 
 @router.get(
-    path="/{address}/getTrasactions",
-    summary="WORKS: Add wallet address to database.",
+    path="/{address}/getTransactions",
+    summary="WORKS: Get wallet transactions.",
     response_model=ApplicationResponse[Transactions],
     status_code=status.HTTP_200_OK,
 )
 async def get_wallet_transactions(
     address: str,
-    limit: int,
     token_amount: int,
+    limit: int = Depends(check_limit_tr),
     user: UserModel = Depends(authorization)
 ):
     return {
@@ -106,5 +111,23 @@ async def get_wallet_transactions(
             address,
             limit,
             token_amount
+        )
+    }
+
+
+@router.get(
+    path="/{address}/getBalance",
+    summary="WORKS: Get wallet balance.",
+    response_model=ApplicationResponse[WalletBalance],
+    status_code=status.HTTP_200_OK
+)
+async def get_wallet_balance(
+    address: str,
+    user: UserModel = Depends(authorization)
+):
+    return {
+        "ok": True,
+        "result": await wallet_manager.get_balance(
+            address,
         )
     }

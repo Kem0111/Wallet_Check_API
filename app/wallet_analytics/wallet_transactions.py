@@ -10,7 +10,7 @@ class TokenTransactions(Wallet):
     token transaction-specific operations.
     """
 
-    def __init__(self, address: str, count: int = 1,
+    def __init__(self, address: str, limit: int = 1,
                  min_token_amount: int = 1) -> None:
         """
         Initialize the TokenTransactions class with an
@@ -20,7 +20,7 @@ class TokenTransactions(Wallet):
         for filtering transactions.
         """
         super().__init__(address)
-        self.count = count
+        self.limit = limit
         self.min_token_amount = min_token_amount
 
     async def get_transactions(self):
@@ -41,7 +41,7 @@ class TokenTransactions(Wallet):
             int(tx["value"]) / (
                 self._DECIMAL_BASE ** int(tx["tokenDecimal"])
             ) >= self.min_token_amount
-        ][:self.count]
+        ][:self.limit]
 
         return transactions
 

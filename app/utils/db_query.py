@@ -1,4 +1,3 @@
-
 from sqlalchemy import Delete, select, delete
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,11 +7,14 @@ from typing import List, Tuple, Type
 from sqlalchemy import and_
 from app.orm.user_wallet import user_wallet_table
 
+
 async def get_or_create_wallet(session:  AsyncSession,
                                model: Type[DeclarativeMeta],
                                **kwargs) -> Tuple[DeclarativeMeta, bool]:
 
-    stmt: Select = select(model).where(and_(*(getattr(model, k) == v for k, v in kwargs.items())))
+    stmt: Select = select(model).where(
+        and_(*(getattr(model, k) == v for k, v in kwargs.items()))
+    )
     stmt = stmt.options(joinedload(model.users))
     result = await session.execute(stmt)
     instance = result.scalars().first()
@@ -30,7 +32,11 @@ async def show_wallet_addresses(session:  AsyncSession,
                                 model: Type[DeclarativeMeta],
                                 user_id: int) -> List[DeclarativeMeta]:
 
-    query: Select = select(model).options(joinedload(model.wallets)).where(model.id == user_id)
+    query: Select = (
+        select(model).
+        options(joinedload(model.wallets)).
+        where(model.id == user_id)
+    )
     result = await session.execute(query)
     user = result.scalars().first()
 
