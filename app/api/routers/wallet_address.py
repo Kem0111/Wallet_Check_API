@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.param_functions import Body
 from app.core.depends import DatabaseSession
-from app.schemas import ApplicationResponse, BodyAddressUploadRequest
+from app.schemas import ApplicationResponse, BodyAddressUploadRequest, WalletAddress
 from app.core.depends import authorization
 from app.orm import WalletModel, UserModel
 from starlette import status
-from app.schemas.schema import DictStrAny
-from app.utils.db_query import get_or_create_wallet, show_wallet_addresses
-from app.schemas.orm.wallet_address import WalletAddress
+from app.utils.db_query import (get_or_create_wallet,
+                                show_wallet_addresses,
+                                delet_wallet_address as del_wallet)
+
 
 router = APIRouter()
 
@@ -64,3 +65,24 @@ async def get_wallet_addresses(
         ),
     }
 
+
+@router.delete(
+    path="/{wallet_id}/deleteAddress",
+    summary="WORKS: Dlete wallet addresses from user_info relationship.",
+    response_model=ApplicationResponse[bool],
+    status_code=status.HTTP_200_OK,
+)
+async def delet_wallet_address(
+    wallet_id: int,
+    session: DatabaseSession,
+    user: UserModel = Depends(authorization)
+):
+    await del_wallet(
+            session=session,
+            wallet_id=wallet_id,
+            user_id=user.id
+    )
+    return {
+        "ok": True,
+        "result": True,
+    }

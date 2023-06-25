@@ -1,12 +1,12 @@
 
-from sqlalchemy import select
+from sqlalchemy import Delete, select, delete
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import Select
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from typing import List, Tuple, Type
 from sqlalchemy import and_
-
+from app.orm.user_wallet import user_wallet_table
 
 async def get_or_create_wallet(session:  AsyncSession,
                                model: Type[DeclarativeMeta],
@@ -34,7 +34,27 @@ async def show_wallet_addresses(session:  AsyncSession,
     result = await session.execute(query)
     user = result.scalars().first()
 
-    if user:
-        return {"addresses": [wallet.address for wallet in user.wallets]}
-    else:
-        return {"addresses": []}
+    res = {"addresses": []}
+
+    for wallet in user.wallets:
+        res["addresses"].append(
+            {
+                "id": wallet.id,
+                "address": wallet.address
+            }
+        )
+    return res
+
+
+async def delet_wallet_address(session:  AsyncSession,
+                               wallet_id,
+                               user_id: int):
+
+    stmt: Delete = delete(user_wallet_table).where(
+        and_(
+            user_wallet_table.c.user_id == user_id,
+            user_wallet_table.c.wallet_id == wallet_id
+        )
+    )
+    await session.execute(stmt)
+    await session.commit()
