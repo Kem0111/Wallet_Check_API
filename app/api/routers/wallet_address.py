@@ -63,3 +63,4 @@ async def get_wallet_addresses(
             user_id=user.id
         ),
     }
+

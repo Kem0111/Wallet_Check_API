@@ -5,7 +5,8 @@ from .routers import (
     register_router,
     login_router,
     logout_router,
-    wallet_router
+    wallet_router,
+    wallet_info_router
 )
 
 
@@ -15,6 +16,7 @@ def create_api_router() -> APIRouter:
     api_router.include_router(login_router, tags=["login"], prefix="/login")
     api_router.include_router(logout_router, tags=["logout"], prefix="/logout")
     api_router.include_router(wallet_router, tags=["wallet_address"], prefix="/wallet")
+    api_router.include_router(wallet_info_router, tags=["wallet_info"], prefix="/wallet/info")
 
     return api_router
 

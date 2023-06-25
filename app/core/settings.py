@@ -45,3 +45,10 @@ class JWTSettings(BaseSettings):
 
 
 jwt_settings = JWTSettings()
+
+
+class EtherscanSettings(BaseSettings):
+    ETHERSCAN_API_KEY: str
+
+
+etherscan_settings = EtherscanSettings()
