@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.param_functions import Body
 from app.core.depends import DatabaseSession
-from app.schemas import ApplicationResponse, BodyAddressUploadRequest, WalletAddress
+from app.schemas import ApplicationResponse, BodyAddressUploadRequest, WalletAddress, Transactions
 from app.core.depends import authorization
 from app.orm import WalletModel, UserModel
 from starlette import status
 from app.utils.db_query import (get_or_create_wallet,
                                 show_wallet_addresses,
                                 delet_wallet_address as del_wallet)
-
+from app.wallet_analytics.wallet_manager import wallet_manager
 
 router = APIRouter()
 
@@ -85,4 +85,26 @@ async def delet_wallet_address(
     return {
         "ok": True,
         "result": True,
+    }
+
+
+@router.get(
+    path="/{address}/getTrasactions",
+    summary="WORKS: Add wallet address to database.",
+    response_model=ApplicationResponse[Transactions],
+    status_code=status.HTTP_200_OK,
+)
+async def get_wallet_transactions(
+    address: str,
+    limit: int,
+    token_amount: int,
+    user: UserModel = Depends(authorization)
+):
+    return {
+        "ok": True,
+        "result": await wallet_manager.get_transactions(
+            address,
+            limit,
+            token_amount
+        )
     }
