@@ -13,7 +13,7 @@ router = APIRouter()
 @router.delete(
     path="/",
     dependencies=[Depends(authorization)],
-    summary="WORKS (need X-CSRF-TOKEN in headers): User logout (token removal).",
+    summary="WORKS (need X-CSRF-TOKEN in headers):logout (token removal).",
     response_model=ApplicationResponse[bool],
     status_code=status.HTTP_200_OK,
 )
