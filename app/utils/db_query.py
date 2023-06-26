@@ -64,3 +64,15 @@ async def delet_wallet_address(session:  AsyncSession,
     )
     await session.execute(stmt)
     await session.commit()
+
+
+async def check_duplicates(session: AsyncSession,
+                           model: Type[DeclarativeMeta],
+                           field: str,
+                           value: str):
+    query: Select = select(model).where(
+            getattr(model, field) == value
+        )
+    result = await session.execute(query)
+
+    return result.scalars().first()

@@ -21,6 +21,7 @@ async def logout_user(
     response: Response,
     authorize: AuthJWT,
 ) -> RouteReturnT:
+
     unset_jwt_cookies(response=response, authorize=authorize)
 
     return {

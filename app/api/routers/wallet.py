@@ -5,7 +5,8 @@ from app.schemas import (ApplicationResponse,
                          BodyAddressUploadRequest,
                          WalletAddress,
                          Transactions,
-                         WalletBalance)
+                         WalletBalance,
+                         RouteReturnT)
 from app.core.depends import authorization
 from app.orm import WalletModel, UserModel
 from starlette import status
@@ -15,8 +16,8 @@ from app.utils.db_query import (get_or_create_wallet,
 from app.wallet_analytics.wallet_manager import wallet_manager
 from app.core.depends.transaction_limits import check_limit_tr
 
-router = APIRouter()
 
+router = APIRouter()
 
 
 @router.post(
@@ -29,7 +30,7 @@ async def add_wallet_address(
     session: DatabaseSession,
     request: BodyAddressUploadRequest = Body(...),
     user: UserModel = Depends(authorization)
-):
+) -> RouteReturnT:
 
     wallet, created = await get_or_create_wallet(session,
                                                  WalletModel,
@@ -60,7 +61,7 @@ async def add_wallet_address(
 async def get_wallet_addresses(
     session: DatabaseSession,
     user: UserModel = Depends(authorization)
-):
+) -> RouteReturnT:
     return {
         "ok": True,
         "result": await show_wallet_addresses(
@@ -81,7 +82,7 @@ async def delet_wallet_address(
     wallet_id: int,
     session: DatabaseSession,
     user: UserModel = Depends(authorization)
-):
+) -> RouteReturnT:
     await del_wallet(
             session=session,
             wallet_id=wallet_id,
@@ -104,7 +105,7 @@ async def get_wallet_transactions(
     token_amount: int,
     limit: int = Depends(check_limit_tr),
     user: UserModel = Depends(authorization)
-):
+) -> RouteReturnT:
     return {
         "ok": True,
         "result": await wallet_manager.get_transactions(
@@ -124,7 +125,7 @@ async def get_wallet_transactions(
 async def get_wallet_balance(
     address: str,
     user: UserModel = Depends(authorization)
-):
+) -> RouteReturnT:
     return {
         "ok": True,
         "result": await wallet_manager.get_balance(

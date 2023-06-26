@@ -1,16 +1,15 @@
-from corecrud import Where
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 from fastapi.param_functions import Body
 from fastapi.responses import Response
 from starlette import status
+from sqlalchemy import Select, select
 
-from app.core.crud import crud
 from app.core.depends import AuthJWT, AuthorizationRefresh, DatabaseSession
 from app.core.security import check_hashed_password
-from app.orm import UserModel
 from app.schemas import ApplicationResponse, RouteReturnT, BodyLoginRequest
 from app.utils.cookies import set_and_create_tokens_cookies
+from app.orm import UserModel
 
 router = APIRouter()
 
@@ -27,10 +26,13 @@ async def login_user(
     session: DatabaseSession,
     request: BodyLoginRequest = Body(...),
 ) -> RouteReturnT:
-    user = await crud.users.select.one(
-        Where(UserModel.email == request.email),
-        session=session,
+    
+    query: Select = select(UserModel).where(
+        UserModel.email == request.email
     )
+    result = await session.execute(query)
+    user = result.scalars().first()
+
     if (
         not user  # user not found
         or not check_hashed_password(
@@ -61,6 +63,7 @@ async def refresh_jwt_tokens(
     authorize: AuthJWT,
     user: AuthorizationRefresh,
 ) -> RouteReturnT:
+
     set_and_create_tokens_cookies(response=response, authorize=authorize, subject=user.id)
 
     return {
