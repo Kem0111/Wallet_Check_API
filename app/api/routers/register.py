@@ -20,7 +20,7 @@ router = APIRouter()
     path="/",
     summary="WORKS: User registration.",
     response_model=ApplicationResponse[bool],
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_201_CREATED,
 )
 async def register_user(
     session: DatabaseSession,

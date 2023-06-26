@@ -10,17 +10,20 @@ WORKDIR /app
 # Install dependencies
 RUN python -m pip install --upgrade pip
 RUN python -m pip install poetry
-RUN poetry config virtualenvs.create false 
 
 # Copy the current directory contents into the container at /app
 COPY . .
 
-RUN poetry install
+RUN poetry config virtualenvs.create false \
+  && poetry install --no-interaction
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY docker/entrypoint.sh docker/entrypoint.sh
 
+RUN chmod +x docker/entrypoint.sh
+
+ENTRYPOINT ["docker/entrypoint.sh"]
+
+CMD ["make", "start"]
 
 # Run migrations
 # RUN poetry run alembic stamp head --purge

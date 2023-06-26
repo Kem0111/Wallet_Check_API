@@ -26,7 +26,7 @@ async def login_user(
     session: DatabaseSession,
     request: BodyLoginRequest = Body(...),
 ) -> RouteReturnT:
-    
+
     query: Select = select(UserModel).where(
         UserModel.email == request.email
     )
