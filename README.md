@@ -16,7 +16,28 @@ The API might interact with users via the frontend interface and store user data
 User can require transactions and token balances of any wallet
 
 ### How to run?
+add .env file
 
+```
+DATABASE_DRIVER=postgresql+asyncpg
+DATABASE_USERNAME=
+DATABASE_PASSWORD=
+DATABASE_HOSTNAME==
+DATABASE_PORT=
+DATABASE_NAME=
+
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRATION_TIME=
+REFRESH_TOKEN_EXPIRATION_TIME=
+COOKIE_SECURE=
+COOKIE_CSRF=
+COOKIE_SAMESITE=
+COOKIE_DOMAIN=
+JWT_SECRET_KEY=
+
+ETHERSCAN_API_KEY=
+
+```
 ```
 git clone https://github.com/Kem0111/Wallet_Check_API.git
 ```
