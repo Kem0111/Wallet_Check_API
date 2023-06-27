@@ -49,3 +49,5 @@ async def test_wallet_routs(ac: AsyncClient):
         headers={"Cookie": cookie},
     )
     assert response.status_code != 404
+
+    

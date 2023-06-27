@@ -2,6 +2,8 @@ import aiohttp
 import json
 from typing import Optional
 from app.core.settings import etherscan_settings
+from fastapi import HTTPException
+from starlette import status
 
 
 class Wallet:
@@ -43,16 +45,18 @@ class Wallet:
 
                 async with session.get(url) as response:
                     if response.status != 200:
-                        return False
+                        raise HTTPException(
+                            status_code=502,
+                            detail=f"Etherscan API returned non-200 status code: {response.status}",
+                        )
 
                     data = await response.text()
         except aiohttp.ClientError:
-            return False
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Unable to make request to Etherscan API"
+            )
 
-        try:
-            # Load JSON data from the response text
-            data = json.loads(data)
-        except json.JSONDecodeError:
-            return False
+        data = json.loads(data)
 
         return data

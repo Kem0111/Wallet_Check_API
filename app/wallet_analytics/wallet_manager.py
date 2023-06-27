@@ -3,7 +3,12 @@ from .wallet_transactions import TokenTransactions
 
 
 class WalletManager:
-
+    """
+    The WalletManager class serves as a higher-level interface for
+    interacting with the Etherscan API.
+    It provides methods to fetch transaction and balance information
+    for a given Ethereum address.
+    """
     async def get_transactions(self, address, limit, token_amount):
 
         transactions = TokenTransactions(address, limit=limit,

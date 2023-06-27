@@ -1,3 +1,28 @@
+"""
+This module provides utility classes for handling and formatting 
+responses within an application.
+
+Classes:
+    ExcludeNone: A class to exclude None values from the serialized
+    representation of the data. ApplicationResponse: A generic model
+    for formatting API responses with specific attributes.
+
+Types:
+    DictStrAny: A shorthand type hint representing a dictionary with
+    string keys and arbitrary values.
+
+    RouteReturnT: A type hint representing the return type of a route
+    (dictionary with string keys and arbitrary values).
+
+    DetailT: A type hint representing detailed information in responses
+    (can be string, list of strings, list of dictionaries, or a dictionary).
+
+    ErrorT: A type hint representing error information in responses
+    (can be string, list of strings, list of dictionaries, or a dictionary).
+
+    ResponseT: A type variable bound to any type, used in ApplicationResponse.
+
+"""
 from __future__ import annotations
 
 from typing import (TYPE_CHECKING,
